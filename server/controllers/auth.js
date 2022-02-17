@@ -27,19 +27,17 @@ const authenticateUser = async (req, res, next) => {
     })
 }
 
-router.post('/login', async (req, res, next) => {
-    let { email, password } = req.body
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body
 
     let existingUser
     try {
         existingUser = await User.findOne({ email: email })
     } catch {
-        const error = new Error('Error! Something went wrong.')
-        return next(error)
+        return res.status(500).send({ msg: 'Error! Something went wrong.' })
     }
     if (!existingUser || existingUser.password !== password) {
-        const error = Error('Wrong details please check at once')
-        return next(error)
+        return res.status(400).send({ msg: 'Invalid Credentials' })
     }
     let token
 
@@ -53,8 +51,7 @@ router.post('/login', async (req, res, next) => {
         )
     } catch (err) {
         console.log(err)
-        const error = new Error('Error! Something went wrong.')
-        return next(error)
+        return res.status(500).send({ msg: 'Error! Something went wrong.' })
     }
 
     res.status(200)
@@ -72,7 +69,7 @@ router.post('/logout', (req, res) => {
 
 router.get('/user', authenticateUser, async (req, res) => {
     const email = req.user.email
-    let user = await User.findOne({ email })
+    const user = await User.findOne({ email })
 
     return res.status(200).send({
         email: user.email,
@@ -80,6 +77,42 @@ router.get('/user', authenticateUser, async (req, res) => {
     })
 })
 
+router.post('/register', authenticateUser, async (req, res) => {
+    const user = await User.findOne({ email: req.user.email })
+
+    if (user.role !== 'ADMIN') {
+        return res.status(403).send({ msg: 'Unauthorized User' })
+    }
+
+    const { email, password } = req.body
+    if (!email || !password) {
+        return res.status(400).send({ msg: 'Invalid Parameters' })
+    }
+
+    try {
+        const user = await User.findOne({ email })
+        if (user) {
+            return res
+                .status(400)
+                .send({ msg: 'User with email already exists' })
+        }
+    } catch (e) {
+        return res.status(500).send({ msg: 'Error! Something went wrong.' })
+    }
+
+    try {
+        await User.create({
+            email,
+            password,
+        })
+    } catch (e) {
+        console.log(e)
+        console.log(e)
+        return res.status(500).send({ msg: 'Error! Something went wrong.' })
+    }
+
+    return res.status(201).send()
+})
 // router.post("/new", authenticateUser, async (req, res) => {
 //   if (!req.body.header || !req.body.content) {
 //     return res.send(400).send({ message: "Invalid Parameters" });
