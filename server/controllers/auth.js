@@ -113,12 +113,5 @@ router.post('/register', authenticateUser, async (req, res) => {
 
     return res.status(201).send()
 })
-// router.post("/new", authenticateUser, async (req, res) => {
-//   if (!req.body.header || !req.body.content) {
-//     return res.send(400).send({ message: "Invalid Parameters" });
-//   }
-//
-//   const phone = req.phone;
-// });
 
 module.exports = router

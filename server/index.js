@@ -1,33 +1,29 @@
-require("dotenv").config();
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const mongoose = require("mongoose");
+require('dotenv').config()
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
-const PORT = 1337;
+const auth = require('./controllers/auth')
+const warehouse = require('./controllers/warehouse')
 
-const isProd = (process.env.NODE_ENV || "development") === "production";
+const PORT = 1337
 
-const auth = require("./controllers/auth");
+const isProd = (process.env.NODE_ENV || 'development') === 'production'
 
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
+const app = express()
+app.use(express.json())
+app.use(cookieParser())
 
 app.use(
-  cors({
-    origin: isProd ? "https://backend.mysite.com" : "http://localhost:5000",
-    credentials: true,
-  })
-);
+    cors({
+        origin: isProd ? 'https://backend.mysite.com' : 'http://localhost:5000',
+        credentials: true,
+    })
+)
 
-mongoose.connect(process.env.MONGO_URL).catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
-
-app.use("/auth", auth);
+app.use('/auth', auth)
+app.use('/warehouse', warehouse)
 
 app.listen(PORT, () => {
-  console.log(`server started on port ${PORT}`);
-});
+    console.log(`server started on port ${PORT}`)
+})
