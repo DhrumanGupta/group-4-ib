@@ -8,14 +8,19 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "prisma": "^3.9.2"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "^3.9.2",
+    "@prisma/client": "3.9.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "faker": "5.5.3",
     "jsonwebtoken": "^8.5.1"
   }
 }

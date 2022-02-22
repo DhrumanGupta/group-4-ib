@@ -5,6 +5,7 @@ const cors = require('cors')
 
 const auth = require('./controllers/auth')
 const warehouse = require('./controllers/warehouse')
+const package = require('./controllers/package')
 
 const PORT = 1337
 
@@ -15,15 +16,16 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(
-    cors({
-        origin: isProd ? 'https://backend.mysite.com' : 'http://localhost:5000',
-        credentials: true,
-    })
+  cors({
+    origin: isProd ? 'https://backend.mysite.com' : 'http://localhost:3000',
+    credentials: true,
+  })
 )
 
 app.use('/auth', auth)
 app.use('/warehouse', warehouse)
+app.use('/package', package)
 
 app.listen(PORT, () => {
-    console.log(`server started on port ${PORT}`)
+  console.log(`server started on port ${PORT}`)
 })

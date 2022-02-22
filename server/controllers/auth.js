@@ -1,42 +1,27 @@
 const express = require('express')
-const User = require('../models/user.model')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
+const { PrismaClient } = require('@prisma/client')
+const authenticateUser = require('../services/authenticateUser')
+
+const prisma = new PrismaClient()
 
 const jwtAuthToken = process.env.JWT_AUTH_TOKEN
-
-const authenticateUser = async (req, res, next) => {
-    const accessToken = req.cookies.accessToken
-
-    if (!accessToken) {
-        return res.status(403).send({ message: 'User not authenticated' })
-    }
-
-    jwt.verify(accessToken, jwtAuthToken, async (err, data) => {
-        if (data) {
-            req.user = data
-            next()
-            return
-        } else if (err.message === 'TokenExpiredError') {
-            res.status(403).send({ message: 'Token Expired' })
-            return
-        }
-
-        console.error(err)
-        res.status(403).send({ error: err, message: 'User not authenticated' })
-    })
-}
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body
 
-    let existingUser
+    if (!email || !password) {
+        return res.status(400).send()
+    }
+
+    let user
     try {
-        existingUser = await User.findOne({ email: email })
-    } catch {
+        user = await prisma.user.findUnique({ where: { email } })
+    } catch (e) {
         return res.status(500).send({ msg: 'Error! Something went wrong.' })
     }
-    if (!existingUser || existingUser.password !== password) {
+    if (!user || user.password !== password) {
         return res.status(400).send({ msg: 'Invalid Credentials' })
     }
     let token
@@ -44,7 +29,7 @@ router.post('/login', async (req, res) => {
     try {
         token = jwt.sign(
             {
-                email: existingUser.email,
+                email: user.email,
             },
             jwtAuthToken,
             { expiresIn: '1d' }
@@ -69,29 +54,34 @@ router.post('/logout', (req, res) => {
 
 router.get('/user', authenticateUser, async (req, res) => {
     const email = req.user.email
-    const user = await User.findOne({ email })
+    const user = await prisma.user.findUnique({ where: { email } })
 
     return res.status(200).send({
         email: user.email,
         role: user.role,
+        name: user.name,
     })
 })
 
 router.post('/register', authenticateUser, async (req, res) => {
-    const user = await User.findOne({ email: req.user.email })
+    const user = await prisma.user.findUnique({
+        where: { email: req.user.email },
+    })
 
     if (user.role !== 'ADMIN') {
         return res.status(403).send({ msg: 'Unauthorized User' })
     }
 
-    const { email, password } = req.body
-    if (!email || !password) {
+    const { email, password, name } = req.body
+    if (!email || !password || !name) {
         return res.status(400).send({ msg: 'Invalid Parameters' })
     }
 
     try {
-        const user = await User.findOne({ email })
-        if (user) {
+        const user = await prisma.user.count({
+            where: { email },
+        })
+        if (user > 0) {
             return res
                 .status(400)
                 .send({ msg: 'User with email already exists' })
@@ -101,13 +91,14 @@ router.post('/register', authenticateUser, async (req, res) => {
     }
 
     try {
-        await User.create({
-            email,
-            password,
+        await prisma.user.create({
+            data: {
+                email,
+                password,
+                name,
+            },
         })
     } catch (e) {
-        console.log(e)
-        console.log(e)
         return res.status(500).send({ msg: 'Error! Something went wrong.' })
     }
 

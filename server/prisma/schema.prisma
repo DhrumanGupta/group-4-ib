@@ -1,9 +1,12 @@
 // `yarn prisma generate` - update TypeScript definitions based on this schema
 // `yarn prisma db push` - push the schema changes to the database
+// `yarn prisma studio` - open the Studio, which allows you to edit the schema.
+// `yarn prisma migrate reset` - reset the migrations to the last version. This will reset the DB and run the seed script
+// `yarn prisma migrate dev --name <descriptive-name>` - generate a migration file for any changes you make to the schema (this will be committed).
 
 datasource db {
-    provider = "mysql"
-    url      = env("MYSQL_URL")
+    provider = "postgres"
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -17,7 +20,7 @@ enum Role {
 
 model User {
     id                  String     @id @default(uuid())
-    email               String     @unique(map: "User.email_unique")
+    email               String     @unique()
     password            String
     name                String
     role                Role       @default(USER)
@@ -28,14 +31,15 @@ model Package {
     id                  String      @id @default(uuid())
     deliveryLocation    String
     sanitized           Boolean     @default(false)
-    warehouse           Warehouse?  @relation(fields: [currentLocation], references: [id])
-    currentLocation     String?
-    heldBy              User?       @relation(fields: [heldByName], references: [name])
-    heldByName          String
+    warehouse           Warehouse?  @relation(fields: [warehouseId], references: [id])
+    warehouseId         String?
+    heldBy              User?       @relation(fields: [heldById], references: [id])
+    heldById            String?
 }
 
 model Warehouse {
     id                  String      @id @default(uuid())
-    location            String
+    location            String      @unique
+    name                String
     packages            Package[]
 }
