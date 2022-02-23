@@ -6,6 +6,7 @@ import Card from '../components/UI/Card'
 import { Header } from '../components/UI/Typography'
 import Button from '../components/UI/Button'
 import useUser from '../hooks/useUser'
+import MetaDecorator from '../components/Utils/MetaDecorator'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -67,13 +68,15 @@ function Login() {
 
   return (
     <main className="my-auto flex-grow h-full w-full">
+      <MetaDecorator title={'Login'} description={'Login to group 4'} />
+
       {errorMessage && (
         <p className={'text-red-500 pb-2 font-semibold text-lg'}>
           {errorMessage}
         </p>
       )}
       <form>
-        <Card className={'mx-auto'}>
+        <Card className={'mx-auto w-[90%] md:w-1/2 lg:w-1/3'}>
           <Header ariaLabel="Login to your account">Login</Header>
           <br />
           <TextInput

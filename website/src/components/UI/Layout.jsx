@@ -1,9 +1,10 @@
 import React from 'react'
+import Navbar from './Navbar'
 
 function Layout({ children }) {
   return (
     <>
-      <h1>Test</h1>
+      <Navbar />
       <div className={'flex grow'}>{children}</div>
       <br />
     </>
