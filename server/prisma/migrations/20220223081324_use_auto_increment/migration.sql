@@ -14,7 +14,7 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Package" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "deliveryLocation" TEXT NOT NULL,
     "sanitized" BOOLEAN NOT NULL DEFAULT false,
     "warehouseId" TEXT,
@@ -22,6 +22,7 @@ CREATE TABLE "Package" (
 
     CONSTRAINT "Package_pkey" PRIMARY KEY ("id")
 );
+
 
 -- CreateTable
 CREATE TABLE "Warehouse" (
@@ -43,3 +44,5 @@ ALTER TABLE "Package" ADD CONSTRAINT "Package_heldById_fkey" FOREIGN KEY ("heldB
 
 -- AddForeignKey
 ALTER TABLE "Package" ADD CONSTRAINT "Package_warehouseId_fkey" FOREIGN KEY ("warehouseId") REFERENCES "Warehouse"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "Package" AUTO_INCREMENT = 1000

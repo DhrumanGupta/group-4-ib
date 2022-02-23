@@ -5,7 +5,7 @@ const cors = require('cors')
 
 const auth = require('./controllers/auth')
 const warehouse = require('./controllers/warehouse')
-const package = require('./controllers/package')
+const packageController = require('./controllers/package')
 
 const PORT = 1337
 
@@ -24,7 +24,7 @@ app.use(
 
 app.use('/auth', auth)
 app.use('/warehouse', warehouse)
-app.use('/package', package)
+app.use('/package', packageController)
 
 app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`)

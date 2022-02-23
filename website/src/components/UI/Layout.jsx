@@ -6,7 +6,6 @@ function Layout({ children }) {
     <>
       <Navbar />
       <div className={'flex grow'}>{children}</div>
-      <br />
     </>
   )
 }

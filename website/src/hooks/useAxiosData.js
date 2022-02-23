@@ -8,32 +8,29 @@ const useAxiosData = (modifyData) => {
     error: false,
   })
 
-  const makeRequest = (request) => {
+  const makeRequest = async (request) => {
     setData({
       loading: true,
       data: undefined,
       error: false,
     })
 
-    request()
-      .then((resp) => {
-        const finalData = modifyData ? modifyData(resp.data) : resp.data
+    try {
+      const resp = await request()
+      const finalData = modifyData ? modifyData(resp.data) : resp.data
 
-        setData({
-          loading: false,
-          data: finalData,
-          error: false,
-        })
+      setData({
+        loading: false,
+        data: finalData,
+        error: false,
       })
-      .catch((error) => {
-        const obj = {
-          loading: false,
-          data: undefined,
-          error,
-        }
-
-        setData(obj)
+    } catch (e) {
+      setData({
+        loading: false,
+        data: undefined,
+        error: e,
       })
+    }
   }
 
   return [data, makeRequest]

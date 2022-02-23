@@ -19,7 +19,7 @@ function Warehouses(props) {
   return (
     <main
       className={
-        'grid mx-auto gap-4 grid-rows-1 h-min grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'
+        'mb-5 grid mx-auto gap-4 grid-rows-1 h-min grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'
       }
     >
       <MetaDecorator title={'Warehouses'} />

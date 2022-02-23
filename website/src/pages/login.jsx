@@ -71,7 +71,7 @@ function Login() {
       <MetaDecorator title={'Login'} description={'Login to group 4'} />
 
       {errorMessage && (
-        <p className={'text-red-500 pb-2 font-semibold text-lg'}>
+        <p className={'text-red-500 pb-2 font-semibold text-lg text-center'}>
           {errorMessage}
         </p>
       )}

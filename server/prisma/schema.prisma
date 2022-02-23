@@ -28,7 +28,7 @@ model User {
 }
 
 model Package {
-    id                  String      @id @default(uuid())
+    id                  Int         @id @default(autoincrement())
     deliveryLocation    String
     sanitized           Boolean     @default(false)
     warehouse           Warehouse?  @relation(fields: [warehouseId], references: [id])

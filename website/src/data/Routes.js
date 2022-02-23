@@ -17,3 +17,14 @@ export const warehouseRoutes = {
   get: `${warehouseBasePath}`,
   create: `${warehouseBasePath}`,
 }
+
+const packageBasePath = `${domain}/package`
+export const packageRoutes = {
+  getMine: `${packageBasePath}/mine`,
+  getAll: `${packageBasePath}`,
+  getFromId: (id) => `${packageBasePath}/${id}`,
+  take: `${packageBasePath}/take`,
+  sanitize: `${packageBasePath}/sanitize`,
+  give: `${packageBasePath}/give`,
+  create: `${packageBasePath}`,
+}

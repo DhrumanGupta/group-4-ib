@@ -5,8 +5,15 @@ import { Fragment } from 'react'
 import Layout from '../components/UI/Layout'
 
 function MyApp({ Component, pageProps }) {
-  const isProtected = Component.isProtected
   const isAnonymous = Component.isAnonymous
+
+  // Make protected the default
+  const isProtected =
+    Component.isProtected === undefined
+      ? Component.isForAll
+        ? false
+        : !isAnonymous
+      : Component.isProtected
 
   if (isProtected && isAnonymous) {
     throw new Error(
@@ -36,5 +43,6 @@ function MyApp({ Component, pageProps }) {
 // Add just so IDE doesn't complain :)
 MyApp.isProtected = false
 MyApp.isAnonymous = false
+MyApp.isForAll = false
 
 export default MyApp

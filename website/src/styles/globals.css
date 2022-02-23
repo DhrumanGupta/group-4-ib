@@ -8,16 +8,20 @@ body {
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply scroll-smooth;
+}
+
 @layer components {
   body::-webkit-scrollbar {
-    @apply w-2;
+    @apply w-1.5;
   }
   body::-webkit-scrollbar-track {
-    @apply bg-white shadow-none rounded;
+    @apply bg-white shadow-none rounded-sm;
   }
 
   body::-webkit-scrollbar-thumb {
-    @apply bg-orange-400 rounded duration-100;
+    @apply bg-orange-400 rounded duration-200;
   }
 
   body::-webkit-scrollbar-thumb:hover {
