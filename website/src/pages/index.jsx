@@ -13,9 +13,13 @@ const data = [
       'Through scientific research and experiments, we have found the ideal packaging to prevent rain and impact damage to your goods.',
   },
   {
-    heading: 'A Safer Experience',
-    content: '',
+    heading: 'Environmentally Friendly',
+    content: 'By conducting thorough experiments, we have come up with the best possible solution for making packages with a low carbon footprint. We use biodegradable or recyclable materials to make packages environmentally friendly, and do our best to sustain it.',
   },
+  {
+    heading: 'Regular Updates',
+    content: 'Due to the decentralized nature of our packaging system, you stay updated on every micro event making it safer and reliable, so you can set back and relax!'
+  }
 ]
 
 export default function Home() {
@@ -54,7 +58,7 @@ export default function Home() {
       </section>
       <section
         className={
-          'min-h-screen max-w-md md:max-w-screen-sm lg:max-w-screen-md mx-auto block w-[95%]'
+          'min-h-screen md:max-w-screen-sm lg:max-w-screen-md mx-auto block w-[90%] md:w-full'
         }
         id={'how'}
       >
@@ -65,9 +69,10 @@ export default function Home() {
             <h2 className={'font-bold text-lg md:text-xl lg:text-2xl'}>
               {x.heading}
             </h2>
-            <p className={'mb-5 md:mb-7 lg:mb-8 text-base lg:text-lg'}>
+            <p className={'mb-7 md:mb-7 lg:mb-8 text-base lg:text-lg'}>
               {x.content}
             </p>
+            <hr className={'mb-7 md:mb-7 lg:mb-8'}/>
           </Fragment>
         ))}
       </section>

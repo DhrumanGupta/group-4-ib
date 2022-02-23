@@ -1,9 +1,22 @@
 const { PrismaClient } = require('@prisma/client')
 const faker = require('faker')
+const { getRandomPackageId } = require('../services/random')
 const prisma = new PrismaClient()
 
 const randomAddress = () => {
   return `${faker.address.secondaryAddress()}, ${faker.address.streetAddress()}, ${faker.address.city()}, ${faker.address.state()}, ${faker.address.country()}`
+}
+
+const makePackages = async (length) => {
+  const array = []
+  for (let i = 0; i < length; i++) {
+    array.push({
+      deliveryLocation: randomAddress(),
+      id: await getRandomPackageId()
+    })
+  }
+
+  return array;
 }
 
 const createWarehouse = async () => {
@@ -18,12 +31,7 @@ const createWarehouse = async () => {
       name: faker.address.county(),
       packages: {
         createMany: {
-          data: Array.from(
-            {
-              length: faker.datatype.number({ min: 8, max: 20 }),
-            },
-            () => ({ deliveryLocation: randomAddress() })
-          ),
+          data: await makePackages(faker.datatype.number({ min: 8, max: 20 }))
         },
       },
     },

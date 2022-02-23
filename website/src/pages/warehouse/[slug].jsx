@@ -4,45 +4,60 @@ import { getFromId } from '../../utils/warehouseApi'
 import Loading from '../../components/UI/Loading'
 import Package from '../../components/Package'
 import useAxiosData from '../../hooks/useAxiosData'
-import useSWR from 'swr'
-import { warehouseRoutes as wareHouseRoutes } from '../../data/Routes'
+import useSWR, { mutate } from 'swr'
+import { packageRoutes, warehouseRoutes as wareHouseRoutes } from '../../data/Routes'
+import { getMine, give } from '../../utils/packageApi'
+import GivePackage from '../../components/GivePackage'
 
 function Slug() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
-  const { data, error, mutate } = useSWR(
-    mounted ? `${wareHouseRoutes.get}/${router.query.slug}` : null,
-    () => getFromId(router.query.slug)
+  const {slug} = router.query
+  const warehouseData = useSWR(
+    mounted ? `${wareHouseRoutes.get}/${slug}` : null,
+    () => getFromId(slug)
   )
+
+  const myPackagesData = useSWR(packageRoutes.getMine, getMine)
 
   useEffect(() => {
     if (!router.isReady) return
     setMounted(true)
   }, [router.isReady])
 
-  if (error) {
+  if (warehouseData.error || myPackagesData.error) {
     return <p>There was an error loading this page</p>
   }
 
-  if (!data && !error) {
+  if (!warehouseData.data && !warehouseData.error) {
     return <Loading />
   }
 
   return (
     <main
       className={
-        'w-full mx-auto max-w-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'
+        'w-full mx-auto max-w-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl grow flex flex-col'
       }
     >
-      <h1 className={'font-bold text-2xl'}>{data.data.name}</h1>
-      <h3>{data.data.location}</h3>
+      <h1 className={'font-bold text-2xl'}>{warehouseData.data.data.name}</h1>
+      <h3>{warehouseData.data.data.location}</h3>
 
-      {data.data.packages.length <= 0 && (
-        <main className={'flex grow items-center justify-center h-full'}>
-          <p className={'text-gray-500 text-lg md:text-xl lg:text-2xl'}>
+      {
+        myPackagesData.data && myPackagesData.data.data.length > 0 && (
+          <span className={'mt-2'}>
+            <GivePackage packages={myPackagesData.data.data} onGive={async (id) => {
+              await give({packageId: id, warehouseId: slug})
+              await myPackagesData.mutate(null)
+              await warehouseData.mutate(null)
+            }}/>
+          </span>
+        )
+      }
+
+      {warehouseData.data.data.packages.length <= 0 && (
+          <p className={'text-gray-500 text-lg md:text-xl lg:text-2xl block text-center mt-auto my-auto'}>
             Wow, such empty
           </p>
-        </main>
       )}
 
       <section
@@ -50,10 +65,11 @@ function Slug() {
           'mt-4 grid mx-auto gap-4 grid-rows-1 h-min grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
         }
       >
-        {data.data.packages.map((x) => (
-          <Package key={x.id} {...x} mutate={mutate} />
+        {warehouseData.data.data.packages.map((x) => (
+          <Package key={x.id} {...x} mutate={warehouseData.mutate} />
         ))}
       </section>
+      <br/>
     </main>
   )
 }

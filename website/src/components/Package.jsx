@@ -59,21 +59,12 @@ function Package({
           </Button>
         )}
         {heldById && !sanitized && (
-          <span className={'flex'}>
             <Button
               onClick={sanitize}
               className={`!rounded-lg !px-4 !py-2 !mt-2`}
             >
               Sanitize
             </Button>
-
-            <Button
-              onClick={sanitize}
-              className={`!rounded-lg !px-4 !py-2 !mt-2 ml-2`}
-            >
-              Sanitize
-            </Button>
-          </span>
         )}
       </span>
     </Card>

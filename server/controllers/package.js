@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { PrismaClient } = require('@prisma/client')
 const authenticateUser = require('../services/authenticateUser')
+const { getRandomPackageId } = require('../services/random')
 
 const prisma = new PrismaClient()
 
@@ -137,7 +138,7 @@ router.post('/give', async (req, res) => {
       .send({ msg: `"Package with id: ${packageId} not found` })
 
   if (!package.heldById || package.heldById !== user.id) {
-    return res.status(400).send({ msg: "Can't give this package" })
+    return res.status(400).send({ msg: 'Can\'t give this package' })
   }
 
   if ((await prisma.warehouse.count({ where: { id: warehouseId } })) <= 0) {
@@ -158,7 +159,7 @@ router.post('/give', async (req, res) => {
   })
 
   await prisma.warehouse.update({
-    where: { email: req.user.email },
+    where: { id: warehouseId },
     data: {
       packages: {
         connect: {
@@ -191,6 +192,7 @@ router.post('/', async (req, res) => {
 
   const package = await prisma.package.create({
     data: {
+      id: await getRandomPackageId(),
       deliveryLocation,
     },
   })
