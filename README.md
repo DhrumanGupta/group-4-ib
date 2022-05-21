@@ -1,2 +1,2 @@
 # group-4-ib  
-group 4 :)
+My group 4 CS project for the IBDP. First time using prisma!
